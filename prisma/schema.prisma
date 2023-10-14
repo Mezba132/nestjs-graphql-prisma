@@ -1,0 +1,24 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id  String @id @default(auto()) @map("_id") @db.ObjectId
+  title String @unique
+  description String?
+  parentId    String? @db.ObjectId
+  parentCategory  Category? @relation("ChildCategories", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childrenCategory  Category[] @relation("ChildCategories")
+  isActive Boolean @default(true)
+  isDelete Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
